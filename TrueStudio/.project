@@ -25,11 +25,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>DHCP6</name>
-			<type>2</type>
-			<locationURI>$%7Bio6Library%7D/Internet/DHCP6</locationURI>
-		</link>
-		<link>
 			<name>Doxygen</name>
 			<type>2</type>
 			<location>I:/99_GitHub/WIZet_Reference/W6100/W6100_EVB/Libraries/io6Library/Doxygen</location>
@@ -38,6 +33,11 @@
 			<name>Ethernet</name>
 			<type>2</type>
 			<locationURI>io6Library/Ethernet</locationURI>
+		</link>
+		<link>
+			<name>Internet</name>
+			<type>2</type>
+			<locationURI>$%7Bio6Library%7D/Internet</locationURI>
 		</link>
 		<link>
 			<name>STM32F10x_StdPeriph_Driver</name>
