@@ -7,12 +7,6 @@
   - [Test packet capture file](#Test-packet-capture-file)
 
 
-
-![DNS1]()
-![DNS2]()
-![DNS_result]()
-[DNS Result Packet Capture.zip]()
-
 ------
 # DNS Example for W6100-EVB
 Common to Any MCU, Easy to Add-on. Internet Offload co-Processor, HW TCP/IP chip,
@@ -44,7 +38,7 @@ In case of used to TureStduino,it it the same as HTTP Server example.
     <img width="60%" src="https://user-images.githubusercontent.com/9648281/55851813-4e189780-5b95-11e9-9b26-95b5240da34c.JPG" />
     <img width="60%" src="https://user-images.githubusercontent.com/9648281/55851814-4eb12e00-5b95-11e9-9588-5e61cf770855.JPG" />
   </p>
-  - If you push the user0 or user1 on the W6100EVB, you can get the time from DNS4 or DNS6
+  - If you push the user0 or user1 on the W6100EVB, you can get the IPv4 or IPv6 of DNS server.
   
   <p align="center">
     <img width="60%" src="https://user-images.githubusercontent.com/9648281/55851812-4e189780-5b95-11e9-91fe-21fb8330ae9e.JPG" />
@@ -57,10 +51,10 @@ In case of used to TureStduino,it it the same as HTTP Server example.
   </p>
 
    ## Test packet capture file
-     <p align="center">
-    <img width="100%" src=https://user-images.githubusercontent.com/9648281/55851980-0b0af400-5b96-11e9-8b38-45d2e5a5546b.JPG" />
-  </p>
+   <p align="center">
+   <img width="100%" src="https://user-images.githubusercontent.com/9648281/55851980-0b0af400-5b96-11e9-8b38-45d2e5a5546b.JPG" />
+    </p>
 
     
-    -Test packet capture file :  [DNS_Packet.zip](https://github.com/WIZnet-ioLibrary/W6100EVB-DNS/files/3062008/DNS.Result.Packet.Capture.zip)
+    -Test packet capture file : [DNS_Packet Capture file.zip](https://github.com/WIZnet-ioLibrary/W6100EVB-DNS/files/3062008/DNS.Result.Packet.Capture.zip)
 
