@@ -8,6 +8,11 @@
 
 
 
+![DNS1]()
+![DNS2]()
+![DNS_result]()
+[DNS Result Packet Capture.zip]()
+
 ------
 # DNS Example for W6100-EVB
 Common to Any MCU, Easy to Add-on. Internet Offload co-Processor, HW TCP/IP chip,
@@ -36,26 +41,26 @@ In case of used to TureStduino,it it the same as HTTP Server example.
   - Power On and push Reset button to start Program<br>
   - Program Run Serial display <br>
   <p align="center">
-    <img width="60%" src="https://user-images.githubusercontent.com/9648281/55846427-a09b8900-5b80-11e9-8aaa-21531dc3a065.JPG" />
-    <img width="60%" src="https://user-images.githubusercontent.com/9648281/55846426-a002f280-5b80-11e9-8688-d5f3e4820448.JPG" />
+    <img width="60%" src="https://user-images.githubusercontent.com/9648281/55851813-4e189780-5b95-11e9-9b26-95b5240da34c.JPG" />
+    <img width="60%" src="https://user-images.githubusercontent.com/9648281/55851814-4eb12e00-5b95-11e9-9588-5e61cf770855.JPG" />
   </p>
   - If you push the user0 or user1 on the W6100EVB, you can get the time from DNS4 or DNS6
   
   <p align="center">
-    <img width="60%" src="https://user-images.githubusercontent.com/9648281/55846450-b8730d00-5b80-11e9-97a4-102be545a52f.JPG" />
+    <img width="60%" src="https://user-images.githubusercontent.com/9648281/55851812-4e189780-5b95-11e9-91fe-21fb8330ae9e.JPG" />
   </p>
 
   ## Code review
   * main.c code flow <br>
   <p align="center">
-    <img width="50%" src="https://user-images.githubusercontent.com/9648281/55851411-67204900-5b93-11e9-988c-4d1b3d38d744.jpg" />
+    <img width="50%" src="https://user-images.githubusercontent.com/9648281/55852110-92f0fe00-5b96-11e9-87b7-f99511bc1521.jpg" />
   </p>
 
    ## Test packet capture file
      <p align="center">
-    <img width="100%" src="https://user-images.githubusercontent.com/9648281/55846455-bd37c100-5b80-11e9-91bd-4516bc67eac2.JPG" />
+    <img width="100%" src=https://user-images.githubusercontent.com/9648281/55851980-0b0af400-5b96-11e9-8b38-45d2e5a5546b.JPG" />
   </p>
 
     
-    -Test packet capture file :  [NTP_Client_Packet.zip](https://github.com/WIZnet-ioLibrary/W6100EVB-NTP/files/3061738/NTP.Result.Packet.Capture.zip)
+    -Test packet capture file :  [DNS_Packet.zip](https://github.com/WIZnet-ioLibrary/W6100EVB-DNS/files/3062008/DNS.Result.Packet.Capture.zip)
 
