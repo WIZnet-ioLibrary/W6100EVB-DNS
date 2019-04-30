@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "board.h"
+#include "board_init.h"
 #include "dns.h"
 
 wiz_NetInfo gWIZNETINFO = { .mac = {0x00, 0x08,0xdc,0xff,0xff,0xff},
@@ -51,26 +51,12 @@ wiz_NetInfo gWIZNETINFO_M = { .mac = {0x00,0x08,0xdc,0xFF,0xFF,0xFF},
 									0xfe,0x08, 0x4c,0x81}   ///< Gateway IPv6 Address
 };
 
-uint8_t WIZ_Dest_IP_virtual[4] = {192, 168, 0, 230};                  //DST_IP Address
-uint8_t WIZ_Dest_IP_Google[4] = {216, 58, 200, 174};              //DST_IP Address
-
-uint8_t mcastipv4_0[4] ={239,1,2,3};
-uint8_t mcastipv4_1[4] ={239,1,2,4};
-uint8_t mcastipv4_2[4] ={239,1,2,5};
-uint8_t mcastipv4_3[4] ={239,1,2,6};
-
-uint16_t WIZ_Dest_PORT = 15000;                                 //DST_IP port
 
 //////////////////////////////////////////////////////////////////////
 /*******************IPv6  ADDRESS**************************/
 //////////////////////////////////////////////////////////////////////
 
-uint8_t MO_flag;
-uint8_t Zero_IP[16] = {0x00, };
-
 #define ETH_MAX_BUF_SIZE	1024
-uint8_t  remote_ip[4] = {192,168,177,200};                      //
-uint16_t remote_port = 8080;
 unsigned char ethBuf0[ETH_MAX_BUF_SIZE];
 unsigned char ethBuf1[ETH_MAX_BUF_SIZE];
 unsigned char ethBuf2[ETH_MAX_BUF_SIZE];
@@ -80,12 +66,6 @@ unsigned char ethBuf5[ETH_MAX_BUF_SIZE];
 unsigned char ethBuf6[ETH_MAX_BUF_SIZE];
 unsigned char ethBuf7[ETH_MAX_BUF_SIZE];
 
-uint8_t bLoopback = 1;
-uint8_t bRandomPacket = 0;
-uint8_t bAnyPacket = 0;
-uint16_t pack_size = 0;
-
-static uint8_t data_buf[2048] ={0,};
 u_char URL[] = "www.google.com";
 uint8_t dns_server_ip[4] = {168,126,63,1};
 uint8_t dns_server_ip6[16] = {0x20,0x01,0x48,0x60,
@@ -94,67 +74,21 @@ uint8_t dns_server_ip6[16] = {0x20,0x01,0x48,0x60,
 								0x00,0x00,0x88,0x88
 };
 void print_network_information(void);
+void print_ipv6_addr(uint8_t* name, uint8_t* ip6addr);
 uint8_t IP_TYPE;
 int main(void)
 {
-	volatile int i;
-	volatile int j,k;
 
-	uint16_t ver=0;
- 	uint16_t curr_time = 0;
- 	uint8_t result_aac=0;
  	uint8_t dnsclient_ip[16] = {0,};
 	uint8_t syslock = SYS_NET_LOCK;
-	uint8_t svr_ipv4[4] = {192, 168, 177, 235};
-	uint8_t svr_ipv6[16] = {0xfe, 0x80, 0x00, 0x00,
-							0x00, 0x00, 0x00, 0x00,
-							0xc1, 0x0b, 0x0a, 0xdf,
-							0xea, 0xf4, 0xf4, 0x2d};
 
-	RCC_ClocksTypeDef RCCA_TypeDef;
-	RCCInitialize();
-	gpioInitialize();
-	usartInitialize();
-	timerInitialize();
-	printf("System start.\r\n");
+	BoardInitialze();
 
 
-
-
-#if _WIZCHIP_IO_MODE_ & _WIZCHIP_IO_MODE_SPI_
-	/* SPI method callback registration */
-	#if defined SPI_DMA
-		reg_wizchip_spi_cbfunc(spiReadByte, spiWriteByte,spiReadBurst,spiWriteBurst);
-	#else
-		reg_wizchip_spi_cbfunc(spiReadByte, spiWriteByte,0,0);
-	#endif
-	/* CS function register */
-	reg_wizchip_cs_cbfunc(csEnable,csDisable);
-#else
-	/* Indirect bus method callback registration */
-	#if defined BUS_DMA
-			reg_wizchip_bus_cbfunc(busReadByte, busWriteByte,busReadBurst,busWriteBurst);
-	#else
-			reg_wizchip_bus_cbfunc(busReadByte, busWriteByte,0,0);
-	#endif
-#endif
-#if _WIZCHIP_IO_MODE_ == _WIZCHIP_IO_MODE_BUS_INDIR_
-	FSMCInitialize();
-#else
-	spiInitailize();
-#endif
-
-	resetAssert();
-	delay(10);
-	resetDeassert();
-	delay(10);
-
-	W6100Initialze();
 	ctlwizchip(CW_SYS_UNLOCK, &syslock);
 
 	// Set Mac and IPv4
 	ctlnetwork(CN_SET_NETINFO, &gWIZNETINFO);
-	print_network_information();
 
 	// Auto Set IPv6
 	if(1 != AddressAutoConfig_Init(&gWIZNETINFO))
@@ -218,55 +152,27 @@ void delay(unsigned int count)
 
 void print_network_information(void)
 {
-
-
-    uint8_t tmp_array[16];
-    uint8_t i;
 	wizchip_getnetinfo(&gWIZNETINFO);
+
 	printf("Mac address: %02x:%02x:%02x:%02x:%02x:%02x\n\r",gWIZNETINFO.mac[0],gWIZNETINFO.mac[1],gWIZNETINFO.mac[2],gWIZNETINFO.mac[3],gWIZNETINFO.mac[4],gWIZNETINFO.mac[5]);
 	printf("IP address : %d.%d.%d.%d\n\r",gWIZNETINFO.ip[0],gWIZNETINFO.ip[1],gWIZNETINFO.ip[2],gWIZNETINFO.ip[3]);
-	printf("SM Mask	   : %d.%d.%d.%d\n\r",gWIZNETINFO.sn[0],gWIZNETINFO.sn[1],gWIZNETINFO.sn[2],gWIZNETINFO.sn[3]);
+	printf("SM Mask    : %d.%d.%d.%d\n\r",gWIZNETINFO.sn[0],gWIZNETINFO.sn[1],gWIZNETINFO.sn[2],gWIZNETINFO.sn[3]);
 	printf("Gate way   : %d.%d.%d.%d\n\r",gWIZNETINFO.gw[0],gWIZNETINFO.gw[1],gWIZNETINFO.gw[2],gWIZNETINFO.gw[3]);
 	printf("DNS Server : %d.%d.%d.%d\n\r",gWIZNETINFO.dns[0],gWIZNETINFO.dns[1],gWIZNETINFO.dns[2],gWIZNETINFO.dns[3]);
-	getGA6R(tmp_array);
-    printf("GW6 : %04X:%04X", ((uint16_t)tmp_array[0] << 8) | ((uint16_t)tmp_array[1]),
-    		((uint16_t)tmp_array[2] << 8) | ((uint16_t)tmp_array[3]));
-    printf(":%04X:%04X", ((uint16_t)tmp_array[4] << 8) | ((uint16_t)tmp_array[5]),
-    		((uint16_t)tmp_array[6] << 8) | ((uint16_t)tmp_array[7]));
-    printf(":%04X:%04X", ((uint16_t)tmp_array[8] << 8) | ((uint16_t)tmp_array[9]),
-    		((uint16_t)tmp_array[10] << 8) | ((uint16_t)tmp_array[11]));
-    printf(":%04X:%04X\r\n ", ((uint16_t)tmp_array[12] << 8) | ((uint16_t)tmp_array[13]),
-    		((uint16_t)tmp_array[14] << 8) | ((uint16_t)tmp_array[15]));
 
-	getLLAR(tmp_array);
-	printf("LLA : %04X:%04X", ((uint16_t)tmp_array[0] << 8) | ((uint16_t)tmp_array[1]),
-			((uint16_t)tmp_array[2] << 8) | ((uint16_t)tmp_array[3]));
-	printf(":%04X:%04X", ((uint16_t)tmp_array[4] << 8) | ((uint16_t)tmp_array[5]),
-			((uint16_t)tmp_array[6] << 8) | ((uint16_t)tmp_array[7]));
-	printf(":%04X:%04X", ((uint16_t)tmp_array[8] << 8) | ((uint16_t)tmp_array[9]),
-			((uint16_t)tmp_array[10] << 8) | ((uint16_t)tmp_array[11]));
-	printf(":%04X:%04X\r\n", ((uint16_t)tmp_array[12] << 8) | ((uint16_t)tmp_array[13]),
-			((uint16_t)tmp_array[14] << 8) | ((uint16_t)tmp_array[15]));
-	getGUAR(tmp_array);
-	printf("GUA : %04X:%04X", ((uint16_t)tmp_array[0] << 8) | ((uint16_t)tmp_array[1]),
-			((uint16_t)tmp_array[2] << 8) | ((uint16_t)tmp_array[3]));
-	printf(":%04X:%04X", ((uint16_t)tmp_array[4] << 8) | ((uint16_t)tmp_array[5]),
-			((uint16_t)tmp_array[6] << 8) | ((uint16_t)tmp_array[7]));
-	printf(":%04X:%04X", ((uint16_t)tmp_array[8] << 8) | ((uint16_t)tmp_array[9]),
-			((uint16_t)tmp_array[10] << 8) | ((uint16_t)tmp_array[11]));
-	printf(":%04X:%04X\r\n", ((uint16_t)tmp_array[12] << 8) | ((uint16_t)tmp_array[13]),
-			((uint16_t)tmp_array[14] << 8) | ((uint16_t)tmp_array[15]));
-
-	getSUB6R(tmp_array);
-	printf("SUB6 : %04X:%04X", ((uint16_t)tmp_array[0] << 8) | ((uint16_t)tmp_array[1]),
-			((uint16_t)tmp_array[2] << 8) | ((uint16_t)tmp_array[3]));
-	printf(":%04X:%04X", ((uint16_t)tmp_array[4] << 8) | ((uint16_t)tmp_array[5]),
-			((uint16_t)tmp_array[6] << 8) | ((uint16_t)tmp_array[7]));
-	printf(":%04X:%04X", ((uint16_t)tmp_array[8] << 8) | ((uint16_t)tmp_array[9]),
-			((uint16_t)tmp_array[10] << 8) | ((uint16_t)tmp_array[11]));
-	printf(":%04X:%04X\r\n", ((uint16_t)tmp_array[12] << 8) | ((uint16_t)tmp_array[13]),
-			((uint16_t)tmp_array[14] << 8) | ((uint16_t)tmp_array[15]));
-
+	print_ipv6_addr("GW6 ", gWIZNETINFO.gw6);
+	print_ipv6_addr("LLA ", gWIZNETINFO.lla);
+	print_ipv6_addr("GUA ", gWIZNETINFO.gua);
+	print_ipv6_addr("SUB6", gWIZNETINFO.sn6);
 
 	printf("\r\nNETCFGLOCK : %x\r\n", getNETLCKR());
+}
+
+void print_ipv6_addr(uint8_t* name, uint8_t* ip6addr)
+{
+	printf("%s : ", name);
+	printf("%04X:%04X", ((uint16_t)ip6addr[0] << 8) | ((uint16_t)ip6addr[1]), ((uint16_t)ip6addr[2] << 8) | ((uint16_t)ip6addr[3]));
+	printf(":%04X:%04X", ((uint16_t)ip6addr[4] << 8) | ((uint16_t)ip6addr[5]), ((uint16_t)ip6addr[6] << 8) | ((uint16_t)ip6addr[7]));
+	printf(":%04X:%04X", ((uint16_t)ip6addr[8] << 8) | ((uint16_t)ip6addr[9]), ((uint16_t)ip6addr[10] << 8) | ((uint16_t)ip6addr[11]));
+	printf(":%04X:%04X\r\n", ((uint16_t)ip6addr[12] << 8) | ((uint16_t)ip6addr[13]), ((uint16_t)ip6addr[14] << 8) | ((uint16_t)ip6addr[15]));
 }
